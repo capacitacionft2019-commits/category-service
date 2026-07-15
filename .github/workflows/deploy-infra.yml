@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'infra/**' # Solo corre si hay cambios en Bicep
-  workflow_dispatch: # Botón manual
+      - 'infra/**' # Asegúrate de que tus archivos Bicep estén dentro de la carpeta 'infra'
+  workflow_dispatch:
 
 permissions:
   id-token: write
@@ -31,6 +31,10 @@ jobs:
         uses: azure/CLI@v2
         with:
           inlineScript: |
+            # Establece explícitamente el contexto de la suscripción
+            az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+            
+            # Ejecuta el despliegue
             az deployment group create \
               --resource-group "RSGRCUSAPP01" \
-              --template-file ./Infra/main.bicep
+              --template-file ./infra/main.bicep
